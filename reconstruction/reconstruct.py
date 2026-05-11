@@ -9,7 +9,8 @@ import numpy as np
 import open3d as o3d
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-
+import os
+os.environ["OPEN3D_DISABLE_WEB_VISUALIZER"] = "1"
 app = FastAPI(title="Reconstruction Service")
 
 class ReconRequest(BaseModel):
