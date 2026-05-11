@@ -10,7 +10,8 @@ from scipy.spatial import KDTree
 from scipy.spatial.transform import Rotation
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-
+import os
+os.environ["OPEN3D_DISABLE_WEB_VISUALIZER"] = "1"
 app = FastAPI(title="Seam Detection Service")
 
 # ── CONFIG (tunable via env vars) ─────────────────────────────
