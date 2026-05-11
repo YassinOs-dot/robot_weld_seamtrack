@@ -1,0 +1,94 @@
+version: "3.9"
+
+services:
+
+  api:
+    build: ./api
+    container_name: weld_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./shared:/shared
+    environment:
+      - SHARED_DIR=/shared
+      - RECON_URL=http://reconstruction:8001
+      - SEAM_URL=http://seam_detection:8002
+      - TRAJ_URL=http://trajectory:8003
+      - RAPID_URL=http://rapid_export:8004
+      - ROBOT_URL=http://robotstudio:8005
+    depends_on:
+      - reconstruction
+      - seam_detection
+      - trajectory
+      - rapid_export
+      - robotstudio
+    networks:
+      - weldnet
+
+  reconstruction:
+    build: ./reconstruction
+    container_name: weld_reconstruction
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./shared:/shared
+    environment:
+      - SHARED_DIR=/shared
+    networks:
+      - weldnet
+
+  seam_detection:
+    build: ./seam_detection
+    container_name: weld_seam
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./shared:/shared
+    environment:
+      - SHARED_DIR=/shared
+    networks:
+      - weldnet
+
+  trajectory:
+    build: ./trajectory
+    container_name: weld_trajectory
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./shared:/shared
+    environment:
+      - SHARED_DIR=/shared
+    networks:
+      - weldnet
+
+  rapid_export:
+    build: ./rapid_export
+    container_name: weld_rapid
+    ports:
+      - "8004:8004"
+    volumes:
+      - ./shared:/shared
+    environment:
+      - SHARED_DIR=/shared
+    networks:
+      - weldnet
+
+  robotstudio:
+    build: ./robotstudio
+    container_name: weld_robotstudio
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./shared:/shared
+    environment:
+      - SHARED_DIR=/shared
+      - RWS_HOST=${RWS_HOST}
+      - RWS_PORT=${RWS_PORT:-80}
+      - RWS_USER=${RWS_USER:-Default User}
+      - RWS_PASS=${RWS_PASS:-robotics}
+    networks:
+      - weldnet
+
+networks:
+  weldnet:
+    driver: bridge
